@@ -1,0 +1,23 @@
+[
+    {
+        "collegeId" : 1,
+        "studentName": "deiva kumaran",
+        "gre": 305.0,
+        "toefl": 101.0,
+        "admission" : true
+    },
+    {
+        "collegeId" : 2,
+        "studentName": "kumaran",
+        "gre": 306.0,
+        "toefl": 111.0,
+        "admission" : true
+    },
+    {
+        "collegeId" : 3,
+        "studentName": "dhanasegaran",
+        "gre": 309.0,
+        "toefl": 107.0,
+        "admission" : false
+    }
+]

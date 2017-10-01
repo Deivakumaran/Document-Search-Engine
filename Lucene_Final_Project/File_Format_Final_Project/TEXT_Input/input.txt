@@ -1,0 +1,53 @@
+Deivakumaran Dhanasegaran
+ 857-707-8992 | dhanasegaran.d@husky.neu.edu | https://www.linkedin.com/in/deivakumaran/
+ Project Repository: https://github.com/Deivakumaran
+SUMMARY
+A software development enthusiast specializing in Object Oriented Design with 2 years of industrial experience in  full software development life cycle, Java, C#, Database design, SQL, Agile/Scrum methodology (JIRA)
+EDUCATION
+Northeastern University| Boston, MA						                                    Expected May 2018
+Master of Science in Information Systems (MSIS): Program Structures and Algorithms, Web Tools and Development, Application Engineering and Development, Data Management and Design, Advance Database Management System GPA: 3.3
+Pondicherry Engineering College| Pondicherry, India						                      May 2014
+Bachelor of Technology in Computer Science and Engineering, GPA: 8.2/10
+TECHNICAL SKILLS 
+Languages/Technologies:  Java, C#,  JavaScript, HTML5, CSS3, JQuery, JSTL, Servlets, AJAX, XML, JSON, RESTful API, Tomcat
+Big Data:                               Hadoop HDFS, Map Reduce, Apache HBASE, Hive, NoSQL, Tableau, Amazon Web service
+Frameworks/Query:          Maven, Swing, J2EE, JUnit, Spring MVC, Hibernate, SQL, T-SQL, PL/SQL, MySQL
+Software Engineering:       Agile SCRUM, JIRA, Software Development Life Cycle, Object Oriented Design Principles, Testing
+Others:                                  Linux, Eclipse, VMware, Visual Studio, Oracle Database, SQL Server Management Studio, GitHub                                   
+EXPERIENCE (2-Years)
+Software Engineer- Aricent |Chennai, India (Java, J2EE, Linux,Python, Agile/Scrum, SDLC , Database Management, MySQL)
+Developed Network device reservation Java Web application which in turn reduced communication overhead by 70%
+Automated the process of updating daily project status for engineers by developing scalable Java application
+Debugged, fixed, deployed various Java application and performed unit, functional test to optimize the application
+Developed JSP pages and servlets that uses Java beans for server side which is processed by Spring MVC model
+Designed, developed back end database using MySQL by implementing functions, triggers and queries 
+Programmed stored procedures for data processing and interacted with the database using JDBC 
+Experience working with scripting languages such as python in order to perform series of automated tasks
+Analyzed, gathered business requirement document by directly interacting with the client  such as coriant, cisco
+PROJECT EXPERIENCE |Northeastern University| Boston, MA,                  
+Foster Care System (HTML5, AJAX, jQuery, JavaScript, Maven, Apache Tomcat, Spring MVC, Hibernate, MySQL)       
+Architected and developed JAVA Web application to manage centralized adoption system that will be processed and assisted by an automated background processing system using Spring MVC and hibernate ORM 
+Utilized hibernate ORM framework for mapping an object-oriented domain model to a relational database
+Developed JPA mapping to the Database tables and implemented Spring security for authentication and authorization 
+Managed multiple session objects and implemented AJAX, DOM manipulation to communicate with server-side scripts
+Employed JSTL library to dynamically generate HTML page in a JSP without mixing Java code and HTML
+Performed sanitization of client side data by using filters and improved the user interface using JavaScript, JSP-JSTL 
+Elasticity in Cloud Computing (Java, Cloud Elasticity, Multithreading, Data Structures, Algorithm)		      
+Implemented a multithreaded application based on Java to enhance the scalability of a website by dynamically adding and removing computer resources to meet varying workload
+Employed efficient data structures to simulate the fluctuating load of server and executed elasticity in cloud computing 
+
+Health Insurance System (C#, ASP.NET, HTML, JavaScript, AJAX, MySQL, MVC, Visual Studio)
+Developed Health insurance MVC web application that claims insurance utilizing actuarial risk adjustment           strategies using C# in ASP.NET framework and coded JavaScript, AJAX for creating interactive web pages
+Programmed advanced stored procedures, functions, queries that process vast amount of data for insurance claims
+Correlation between movie and crime dataset (Java, Hadoop, HDFS, Map Reduce, AWS, HBase, Microsoft Power BI) 
+Analyzed movie and FBI crime dataset to analyze whether the movies have any influence on rate of crimes happening across the cities using Elastic Map Reduce (EMR) cluster on Amazon Web Service(AWS)
+Implemented various Map Reduce jobs using design Patterns such as summarization, filtering, organizational and Joins
+Performed sentiment analysis and predictive analysis to identify different opinion about the movie reviews 
+Visualized and analyzed the data using business intelligence tool named Microsoft Power BI 
+IMDB Movie Database System (Normalization, MySQL, Hive, Oracle, PL/SQL, Tableau, Toad Data Modeler)	
+Normalized and designed ER Model for IMDB movie database using Toad Data Modeler and reverse engineered DDL script in SQL, Oracle and Apache Hive on Horton works Data Platform.
+Executed and deployed the user end functionalities using Procedures, Triggers, Views, Back-ups and Sub-queries
+Interpreted the data using Tableau for analyzing the trends, variations of the data in form of graphs and charts
+Real Time Crime Tracking System using IOT (Java Swings, iText, DB4O, JFreeChart, Google geocoding API)	                                 
+Programmed Java Swing application for ‘Real Time Crime Tracking System’ using Ecosystem Model supported by DB4O
+Tracked the location of the victim with latitude, longitude using Google Maps Geocoding API to reach the criminals which reduced 1/5th of the response time and visualized the statistics of the criminal records using JFreeChart

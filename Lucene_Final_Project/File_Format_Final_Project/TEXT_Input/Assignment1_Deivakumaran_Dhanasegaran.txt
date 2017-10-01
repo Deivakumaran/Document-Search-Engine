@@ -1,0 +1,82 @@
+     The Google File System
+User Experience Engineering Google organized the GFS into clusters of computers which includes three kind of entities: Client, Master server and chunkservers Developed Network device reservation.
+GFS is fault tolerance which include master and chunk replication, a streamlined recovery process, rebalancing, stale replica detection, garbage removal and checksumming.
+The main coordinator for the cluster is master which is responsible maintaining the operational log, metadata (stored in master’s memory) which is used to keep track of location of chunks within the cluster. Operational log is stored on master’s local disk and replicated on remote machines which help us to update the activities of master state reliably and without risking inconsistencies in the event of master crash.
+By default GFS copies three replicas per chunk on different machines . GFS uses unique chunck identifier and if on the replica’s handle doesn’t match chunk handle, the master server creates a new replica and assigns it to a chunkserver. Also the master server designates it as a stale replica which becomes garbage and after three days, the master server can delete a garbage chunk.  
+Chunkservers is responsible for storing the 64MB file chunks and they send the requested chunk directly to the client not to master server. Upon start  up the master polls all the chunkservers in its cluster and chunkservers respond by telling the content of their inventories. All this metadata is kept currently updated by the Master server by periodically receiving updates from each chunk server which is called Heart-beat messages.
+The client sends a request of particular file on the system to the master and the server responds with the location for the primary replica of the respective chunk. The primary replica holds a lease from the master server for the chunk in question. If no replica currently holds a lease, the master server designates a chunk as the primary by choosing the chunkserver closest to the client. That chunkserver chunk becomes the primary. Then the client can directly contact the appropriate chunkserver which client which sends the replica to the client.
+Write requests are a little more complicated. When the client  sends a request to the master server, it replies with the location of the primary and secondary replicas. The client stores this information in a memory cache. In this way, if the client needs to refer to the same replica later on, it can bypass the master server. 
+The client then sends the write data to all the replicas, starting with the closest replica and ending with the furthest one. Google compares this data delivery method to a pipeline.
+Once the replicas receive the data, the primary replica begins to assign consecutive serial numbers to each change to the file. Changes are called mutations. This serial numbers instruct the replicas on how to order each mutation. The primary then applies the mutations in sequential order to its own data and then it sends a write request to the secondary replicas, which follow the same application process. The secondary replicas report back to the primary and then the primary replica reports back to the client. If the secondary replica doesn't update correctly, the primary replica tells the secondary replica to start over from the beginning of the write process. If the entire write process is not successful, then the primary replica tells the client what happened. If any particular secondary replica doesn’t work, the master server will identify and collect the affected replica as garbage.
+Copies of master server are created called shadow masters(limited to read requests ) is used when master server is failed . All the master server replicas maintain contact with the primary master server and  monitor the operation log and poll chunkservers periodically to keep track of data. If the primary master server is failed and cannot be restart, a secondary master server can take its place.
+GFS uses a system checksumming inorder to prevent data corruption. The system breaks each 64 MB chunk into blocks of 64 kilobytes (KB) with Each block within a chunk has its own 32-bit checksum. The master server monitors chunks by looking at the checksums and If the checksum of a replica doesn't match the checksum in the master server's memory, the master server deletes the replica and creates a new one to replace it.
+
+
+MapReduce: Simplified Data Processing on Large Clusters
+Map reduce is a programming model which is used for processing many tera byte of data on thousands of machine in a cluster. MapReduce framework involves two steps process which includes map and reduces function which is defined with respect to key and value pair. The map function is used to processes a key/value pair to generate a set of intermediate key/value pairs. 
+The MapReduce library groups together all intermediate values associated with the same intermediate key  and passes them to the Reduce function. The Reduce function accepts an intermediate key and a set of values for that key which are supplied via an iterator and merges together these values to form a possibly smaller set of values. Typically just zero or one output value is produced which can easily fit in memory.
+User program split the input file into M pieces of 16MB to 64MB per piece and start up many copies of the program on the cluster of machines. The master program picks idle workers and assigns each one a map or reduce task. The role of worker is to read, parse the input split into key/value pairs and passes each pair to user-defined Map function. 
+Map function produces intermediate key/value pair and is buffered in memory. These pairs are periodically written to local disk and partitioned into R regions and the location in local disks is passed back to the master who is responsible for forwarding these locations to reduce workers. The reduce worker reads all intermediate data and sorts it by the intermediate Key since many different key map to same reduce task. Then reduce worker sends the intermediate key/value pairs to reduce function and produces the output which appends to a output file.
+Fault tolerance is achieved through map reduce library.
+Master pings every worker periodically for certain amount of time to check failure. Therefore any map task completed by the worker are reset back to initial idle state for scheduling on other workers because their output is stored on the local disk of failed machine and therefore inaccessible .Similarly any map or reduce task in progress on failed worker is also rest to idle and become eligible for rescheduling.   
+Master  write periodic checkpoints of master data structure so that if the master dies, new copy can be started from check point. So, if the master fails mapreduce computation is aborted.
+Master conserve Network bandwidth consumption by assigning map tasks to the same machines that holds the replica of the input data. Failing this possibility the tasks are atleast assigned to the machine near a replica. To improve dynamic load balancing and speed recovery Map phase M should be larger than Reduce phase R and each worker should perform more tasks.
+One of the reason for delay in the total time taken for Map reduce operation is straggler, a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.
+The reason may be due to bad disk,  other task running on CPU, memory, local disk, or network bandwidth. But the main reason experienced was a bug in machine initialization code that caused processor caches to be disabled. In order to overcome this problem the master schedules backup executions of the remaining in-progress tasks when map reduce operation is close to completion. The task is marked as completed whenever either the primary or the backup execution completes.
+The MapReduce library provides support for reading input data in several different formats which include key/value pair, sequence of key value pair sorted by key, etc.
+To speed up operations partial combining is done by merging the data before being sent to intermediate files using a user defined combiner function.
+To help facilitate debugging, profiling, and small-scale testing, users are allowed to perform debugging on local machines by using any debugging or testing tools.
+The master runs an internal HTTP server and exports a set of status pages for human consumption. This can be used to identify when a computation is slower and debugging bugs.
+The MapReduce library provides a counter facility to count occurrences of various events.
+One of our most significant uses of MapReduce to date has been a complete rewrite of the production indexing system that produces the data structure used for google web search service. Used to reduce size of program, easy changes of code, improve performance, reduce failures.
+
+Bigtable: A Distributed Storage System for Structured Data
+Bigtable is distributed storage system used to store structured data. 
+BigTable is developed on top of other services specifically Google File System, Scheduler, Chubby Lock Service, and MapReduce.
+Each table is defined as a sparse, distributed multi-dimensional sorted map designed to scale peta byte of data across  thousands of machines taking advantage of those resources without any reconfiguration. BigTable maps is indexed by a row key ( 64KB in size) , column key and timestamp. Value in the map is  array of bytes.
+The table maintains data in lexicographic order by row key and the row range for a table is dynamically partitioned as multiple tablets each approximately 100-200 MB in size by default. Each tablet server manages a set of tablets. The tablet server handles read and write requests to the tablets that it has loaded, and also splits tablets that have grown too large.
+Column stores arbitrary name-value pairs in the form of column-family: label, string. The possible set of column families for a table is fixed at the time of table creation. The number of distinct column families in a table is expected to be small and rarely change. The actual columns within the column family can be created dynamically at any time.
+ Column families are stored close together resulting in efficient data access similar to columnar database. Access control, and disk and memory accounting are done at the column-family level.
+Each cell which includes rows and column can contain multiple versions of the data, indexed by timestamps. In order to read most recent data, the data is stored in decreasing timestamp order.
+BigTable implementation involves three major components: Library linked to every client, one Master server and many tablet servers. Tablet servers can be added dynamically. Each tablet server manages the read and requests of a set of tablets.The main role of  Master is assign tablets to tablet servers, tablet-server load balance, garbage collection, detect adding and expiration of tablet servers and handle schema changes like table and column family creations.
+BigTable uses a three-level hierarchy that of a B+ tree  to store tablet location information :
+1. The first level - file which contain location of the root tablet.
+2. The root tablet contains the locations of all tablets in a special METADATA table
+3. Each Metadata tablets contain the location of a set of user tablets (each metadata row is around 1KB).
+Functions for creating and deleting tables and column families are provided by APIs. 
+It does not support general transactions across row keys. Instead an interface that enables batching writes across row keys is provided. 
+The Sawzall scripts allow various forms of data transformation, filtering and summarization. At present, the client scripts are not allowed to write back into Bigtable.
+A read operation is executed on a merged view of the sequence of SSTables and the memtable. The SSTable format is used internally to store Bigtable data and  completely mapped into memory which allows lookups and scans without touching disk. Updates are committed to a commit log  and the recently committed one called a memtable. The older updates are stored in a sequence of SSTables. 
+The only mutable data structure that is accessed by both reads and  writes is memtable. The master removes obsolete SSTables as garbage collection .
+ Tablet servers uses scan cache and block cache  to improve read performance. To read the same data repeatedly, scan cache is useful. In order to read data that is close to the recently data, block cache is useful.
+
+The Chubby lock service for loosely-coupled distributed systems
+Chubby is a distributed lock service intended for synchronization of activities within google distributed systems.
+GFS and Bigtable use Chubby to elect a primary from redundant replicas and it is a standard repository for files that require high availability, such as access control lists.
+Two main component for Implementation of Chubby is Library and Server.
+Chubby cell consists of set of replicas (Typically 5).Uses  Paxos to elect master and promise not to elect new master for some time .It Maintain copies of simple database and writes satisfied by majority quorum. Reads satisfied by master alone and replacement system is supported for failed replicas.
+The design of chubby client should Link against library .Master location requests to replicas and all the requests sent directly to master.
+Each chubby file can be a reader-writer lock . Many clients may have reader lock or one client can have write lock. Locks are advisory not mandatory. When mandatory locks prevents the access advisory locks allows other clients to access the file.
+Chubby Client subscribes  to even when creating handle. Delivered async via up-call from client library
+Event types are :
+* File contents modified
+* Child node added / removed / modified
+* Chubby master failed over
+* Handle / lock have become invalid
+* Lock acquired / conflicting lock request (rarely used)
+
+API allow primary election in which Candidates attempt to open lock file/get lockwinner and writes identity with SetContents().Also replicas find out with GetContentsAndStat(), possibly after file-modification event.Primary obtains sequencer GetSequencer().
+Chubby handles are created only by open and close operations. Open opens a named file or directory to produce a handle while close closes the open handle. Poison causes all operations on handle to fail without closing it.
+Traffic is reduced by chubby by caches file data and node meta-data.
+A chubby session is a relationship between chubby client and chubby cell. This relationship is maintained by periodic handshakes called Keep alive.
+A client requests a session by contacting the master and ends the session when it terminates or when the session is idle. Each session has a lease.
+Steps of newly-elected master if fail:
+* Pick new epoch number
+* Respond only to master location requests
+* Build in-memory state for sessions / locks from DB
+* Respond to KeepAlives
+* Emit fail-over events to caches
+* Wait for acknowledgements / session expire
+* Allow all operations to proceed
+
+
